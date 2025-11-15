@@ -10,49 +10,47 @@ export default function HomeClient({ projects }) {
   const [city, setCity] = useState("");
   const [status, setStatus] = useState("");
 
+  // ------------------ FILTER LOGIC ------------------
   let filteredProjects = projects;
 
-// City filter
-if (city) {
-  filteredProjects = filteredProjects.filter(
-    (p) => p.city.trim().toLowerCase() === city.toLowerCase()
-  );
-}
+  if (city) {
+    filteredProjects = filteredProjects.filter(
+      (p) => p.city.trim().toLowerCase() === city.toLowerCase()
+    );
+  }
 
-// Builder filter
-if (selectedBuilder) {
-  filteredProjects = filteredProjects.filter(
-    (p) =>
-      p.builder &&
-      p.builder.trim().toLowerCase() === selectedBuilder.toLowerCase()
-  );
-}
+  if (selectedBuilder) {
+    filteredProjects = filteredProjects.filter(
+      (p) =>
+        p.builder &&
+        p.builder.trim().toLowerCase() === selectedBuilder.toLowerCase()
+    );
+  }
 
-// Status filter
-if (status) {
-  filteredProjects = filteredProjects.filter(
-    (p) =>
-      p.projectStatus &&
-      p.projectStatus.trim().toLowerCase() === status.toLowerCase()
-  );
-}
+  if (status) {
+    filteredProjects = filteredProjects.filter(
+      (p) =>
+        p.projectStatus &&
+        p.projectStatus.trim().toLowerCase() === status.toLowerCase()
+    );
+  }
 
-// Search filter
-if (searchQuery) {
-  filteredProjects = filteredProjects.filter(
-    (p) =>
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.price.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (p.builder &&
-        p.builder.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-}
+  if (searchQuery) {
+    filteredProjects = filteredProjects.filter(
+      (p) =>
+        p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.price.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (p.builder &&
+          p.builder.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  }
 
+  // ---------------------------------------------------
 
   return (
     <>
-      {/* SEARCH SECTION */}
+      {/* ------------------- SEARCH SECTION ------------------- */}
       <section className="bg-[#121212] py-10 border-b border-[#222]">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-2xl font-semibold mb-4">Search Properties</h2>
@@ -60,16 +58,16 @@ if (searchQuery) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <input
               type="text"
-              placeholder="Search by project / builder"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-[#1c1c1c] p-3 rounded-lg border border-[#333] focus:outline-none focus:border-gray-500"
+              placeholder="Search by project / builder"
+              className="bg-[#1c1c1c] p-3 rounded-lg border border-[#333]"
             />
 
             <select
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="bg-[#1c1c1c] p-3 rounded-lg border border-[#333] focus:outline-none"
+              className="bg-[#1c1c1c] p-3 rounded-lg border border-[#333]"
             >
               <option value="">Select City</option>
               <option value="Mumbai">Mumbai</option>
@@ -80,7 +78,7 @@ if (searchQuery) {
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="bg-[#1c1c1c] p-3 rounded-lg border border-[#333] focus:outline-none"
+              className="bg-[#1c1c1c] p-3 rounded-lg border border-[#333]"
             >
               <option value="">Project Status</option>
               <option value="Ongoing">Ongoing</option>
@@ -91,20 +89,22 @@ if (searchQuery) {
 
           {(searchQuery || city || status || selectedBuilder) && (
             <button
+              className="mt-4 bg-white text-black px-4 py-2 rounded"
               onClick={() => {
                 setSearchQuery("");
                 setCity("");
                 setStatus("");
                 setSelectedBuilder(null);
               }}
-              className="mt-4 bg-white text-black px-4 py-2 rounded"
             >
               Reset Filters
             </button>
           )}
-  
+       
+     
         
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-10">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-5">
             {filteredProjects.map((p) => {
               const img =
                 p.images?.[0]?.formats?.medium?.url || p.images?.[0]?.url;
@@ -139,8 +139,8 @@ if (searchQuery) {
         </div>
       </section>
 
-        {/* BUILDER FILTER SECTION */}
-        <section className="py-14 bg-[#121212] border-b border-[#222]">
+      {/* ------------------- BUILDER FILTER SECTION ------------------- */}
+      <section className="py-14 bg-[#121212] border-b border-[#222]">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-semibold mb-6">Top Builders</h2>
 
