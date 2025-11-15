@@ -1,126 +1,48 @@
-"use client";
+import HomeClient from "./components/HomeClient";
 
-import { useState, useEffect } from "react";
-import ProjectCard from "./components/ProjectCard";
-
-export default function Home() {
-  const [projects, setProjects] = useState([]);
-  const [cityFilter, setCityFilter] = useState("All");
-  const [searchText, setSearchText] = useState("");
-  const [builderFilter, setBuilderFilter] = useState("All");
-  const [statusFilter, setStatusFilter] = useState("All");
-
-
-  async function fetchProjects() {
-    const res = await fetch("http://127.0.0.1:1337/api/projects?populate=images");
-    const data = await res.json();
-    setProjects(data.data);
-  }
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  
-
-  // Filter logic
-  const filteredProjects = projects
-  .filter((p) =>
-    cityFilter === "All" ? true : p.city.trim() === cityFilter
-  )
-  .filter((p) =>
-    builderFilter === "All"
-      ? true
-      : p.builder && p.builder.trim() === builderFilter
-  )
-  .filter((p) =>
-    statusFilter === "All"
-      ? true
-      : p.projectStatus && p.projectStatus.trim() === statusFilter
-  )
-  .filter((p) =>
-    p.title.toLowerCase().includes(searchText.toLowerCase()) ||
-    p.city.toLowerCase().includes(searchText.toLowerCase()) ||
-    p.price.toLowerCase().includes(searchText.toLowerCase()) ||
-    (p.builder && p.builder.toLowerCase().includes(searchText.toLowerCase()))
+async function getProjects() {
+  const res = await fetch(
+    "http://127.0.0.1:1337/api/projects?populate=images",
+    { cache: "no-store" }
   );
 
+  const data = await res.json();
+  return data.data;
+}
 
+export default async function Home() {
+  const projects = await getProjects();
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Projects (Live from the Strapi)</h1>
+    <>
+      {/* HERO SECTION */}
+      <section className="relative h-[70vh] w-full bg-gradient-to-b from-black/50 to-black">
+        <img
+          src="https://images.unsplash.com/photo-1523217582562-09d0def993a6"
+          alt="Luxury Real Estate"
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+        />
 
-      <div className="mb-6">
-  <input
-    type="text"
-    placeholder="Search projects..."
-    className="border p-2 rounded w-full md:w-1/3"
-    value={searchText}
-    onChange={(e) => setSearchText(e.target.value)}
-  />
-</div>
+        <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col justify-center">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4">
+            Find Your Next Home
+          </h1>
 
+          <p className="text-gray-300 text-lg md:text-xl max-w-xl">
+            Curated premium residential projects from top builders across India.
+          </p>
 
-      <div className="mb-6">
-  <label className="font-semibold mr-3">Filter by City:</label>
+          <a
+            href="#projects"
+            className="mt-6 inline-block bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
+          >
+            Explore All Projects
+          </a>
+        </div>
+      </section>
 
-  <select
-    className="border p-2 rounded"
-    value={cityFilter}
-    onChange={(e) => setCityFilter(e.target.value)}
-  >
-    <option value="All">All Cities</option>
-    <option value="Mumbai">Mumbai</option>
-    <option value="Pune">Pune</option>
-    <option value="Goa">Goa</option>
-  </select>
-</div>
-
-<div className="mb-6">
-  <label className="font-semibold mr-3">Filter by Builder:</label>
-
-  <select
-    className="border p-2 rounded"
-    value={builderFilter}
-    onChange={(e) => setBuilderFilter(e.target.value)}
-  >
-    <option value="All">All Builders</option>
-    <option value="Lodha">Lodha</option>
-    <option value="Godrej">Godrej</option>
-    <option value="Brigade">Brigade</option>
-  </select>
-</div>
-
-<div className="mb-6">
-  <label className="font-semibold mr-3">Filter by Status:</label>
-
-  <select
-    className="border p-2 rounded"
-    value={statusFilter}
-    onChange={(e) => setStatusFilter(e.target.value)}
-  >
-    <option value="All">All Status</option>
-    <option value="Upcoming">Upcoming</option>
-    <option value="Ongoing">Ongoing</option>
-    <option value="Completed">Completed</option>
-  </select>
-</div>
-
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {filteredProjects.map((p) => (
-
-          <ProjectCard
-            key={p.id}
-            id={p.documentId}
-            title={p.title}
-            city={p.city}
-            price={p.price}
-            image={p.images?.[0]}  // pass first image
-          />
-        ))}
-      </div>
-    </div>
+      {/* INTERACTIVE PART OF HOME */}
+      <HomeClient projects={projects} />
+    </>
   );
 }
