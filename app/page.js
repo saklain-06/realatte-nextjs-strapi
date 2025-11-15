@@ -1,4 +1,5 @@
 import HomeClient from "./components/HomeClient";
+import Footer from "./components/Footer";
 
 async function getProjects() {
   const res = await fetch(
@@ -43,6 +44,7 @@ export default async function Home() {
 
       {/* INTERACTIVE PART OF HOME */}
       <HomeClient projects={projects} />
+
     </>
   );
 }
